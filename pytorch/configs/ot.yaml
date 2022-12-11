@@ -1,0 +1,39 @@
+defaults:
+  - override hydra/launcher: submitit_slurm
+
+seed: 0
+
+dim: 2
+
+target0: pinwheel
+target1: 8gaussians
+
+d_model: 96
+nhidden: 4
+nmix: 128
+actfn: swish
+
+lambd_coef: 50
+
+num_iterations: 10000
+batch_size: 256
+lr: 1e-3
+num_test_samples: 5000
+
+vizfreq: 500
+evalfreq: 50
+logfreq: 10
+
+hydra:
+  run:
+    dir: ./exp_local/${dim}d/ncl/${target0}->${target1}/${now:%Y.%m.%d}/${now:%H%M%S}
+  sweep:
+    dir: ./exp/${dim}d/ncl/${target0}->${target1}/${now:%Y.%m.%d}/${now:%H%M%S}
+    subdir: ${hydra.job.num}
+  launcher:
+    max_num_timeout: 100000
+    timeout_min: 4319
+    partition: learnlab
+    mem_gb: 64
+    cpus_per_task: 10
+    gpus_per_node: 1
